@@ -2,6 +2,7 @@ package com.example.algamoney.api.resource;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Optional;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -47,7 +48,11 @@ public class CategoriaResource {
 	}
 	
 	@GetMapping("/{codigo}")
-	public Categoria buscarPeloCodigo(@PathVariable Long codigo) {
-	  return this.categoriaRepository.findById(codigo).orElse(null);
+	public ResponseEntity<Categoria> buscarPeloCodigo(@PathVariable Long codigo) {
+	Optional<Categoria> categoria = this.categoriaRepository.findById(codigo);
+	return categoria.isPresent() ? 
+	        ResponseEntity.ok(categoria.get()) : ResponseEntity.notFound().build();
+	//ao invés de ficarmos checando manualmente de objeto é null ou não, o Optional nos dá algumas facilidades.
+	//Neste caso utilizamos o método isPresent, que nada mais é que uma comparação “obj != null”, e finalizamos com um ternário
 	}
 }
