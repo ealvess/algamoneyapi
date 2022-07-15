@@ -2,6 +2,7 @@ package com.example.algamoney.api.resource;
 
 import java.util.List;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,7 +17,11 @@ public class CategoriaResource {
 	private CategoriaRepository categoriaRepository;
 	
 	@GetMapping
-	public List<Categoria> listar(){
-		return categoriaRepository.findAll();
+	public ResponseEntity<?> listar(){
+		List<Categoria> categorias = categoriaRepository.findAll();
+		return !categorias.isEmpty() ? ResponseEntity.ok(categorias) : ResponseEntity.noContent().build();
+		//se a lista não estiver vazia, responde com 200 ok passando as categorias, caso esteja vazia, retorna
+		//nocontent status code 204, ou seja, deu certo no servidor mas não tem nada para mostrar. 
+		//o build é colocado para gerar um responseentity
 	}
 }
