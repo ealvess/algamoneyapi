@@ -10,20 +10,27 @@ import com.example.algamoney.api.repository.PessoaRepository;
 
 @Service
 public class PessoaService {
-	
+
 	@Autowired
 	private PessoaRepository pessoaRepository;
 
 	public Pessoa atualizar(Long codigo, Pessoa pessoa) {
-		// utilizamos o método orElseThrow(...) de Optional, o que significa que caso o
-		// Optional obtido pela
-		// consulta esteja sem conteúdo, iremos lançar uma exceção.
-		// Esse código é equivalente ao feito na aula
-		Pessoa pessoaSalva = this.pessoaRepository.findById(codigo)
-				.orElseThrow(() -> new EmptyResultDataAccessException(1));
+		Pessoa pessoaSalva = buscarPessoaPeloCodigo(codigo);
 
 		BeanUtils.copyProperties(pessoa, pessoaSalva, "codigo");
 		return pessoaRepository.save(pessoaSalva);
+	}
+
+	public void atualizarPropriedadeAtivo(Long codigo, Boolean ativo) {
+		Pessoa pessoaSalva = buscarPessoaPeloCodigo(codigo);
+		pessoaSalva.setAtivo(ativo);
+		pessoaRepository.save(pessoaSalva);
+	}
+
+	private Pessoa buscarPessoaPeloCodigo(Long codigo) {
+		Pessoa pessoaSalva = this.pessoaRepository.findById(codigo)
+				.orElseThrow(() -> new EmptyResultDataAccessException(1));
+		return pessoaSalva;
 	}
 
 }
